@@ -1,0 +1,14 @@
+- [ ] fix Inter font issue in deployment
+- [ ] connect Supabase
+- [ ] create endpoints for 
+    - [ ] get articles
+    - [ ] add article
+    - [ ] update article
+    - [ ] delete article
+    - [ ] login for core members
+    - [ ] logout for core members
+    - [ ] get authenticated user's profile
+- [ ] index of logs in home page
+- [ ] create log sheet
+- [ ] update log sheet
+- [ ] delete log functionality
