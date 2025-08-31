@@ -10,8 +10,8 @@ const Navbar = async () => {
         <h2 className="">An Archive of ProjectQ's Journey.</h2>
         <p>
           Q-Archive is a minimal, distraction-free space built to preserve and
-          document the evolution of ProjectQ. Every entry is designed to place
-          the writing itself at the forefront.
+          document the evolution of ProjectQ. <span className="italic">Every entry is designed to place
+          the writing itself at the forefront.</span>
         </p>
         <p>
           The archive emphasizes clarity and simplicity, making it easy to read,

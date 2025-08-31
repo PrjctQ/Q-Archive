@@ -1,9 +1,10 @@
 import { GithubIcon, PlayIcon, TwitterIcon } from "lucide-react"
 import Link from "next/link"
+import { ModeToggle } from "./ui/theme-toggle"
 
 export default function Footer() {
   return (
-    <footer className="flex shrink-0 items-center w-full mx-auto flex-row justify-between gap-2 p-2 md:p-4 border-t">
+    <footer className="flex shrink-0 items-center w-full mx-auto flex-row justify-between gap-2 py-2 md:py-4 border-t">
       <Link target="_blank" href="https://github.com/prjctq" className="font-bold" prefetch={false}>
         Q-Archive | ProjectQ
       </Link>
@@ -32,6 +33,7 @@ export default function Footer() {
           <span className="sr-only">YouTube</span>
           <PlayIcon className="w-4 h-4"/>
         </Link>
+        <ModeToggle/>
       </div>
     </footer>
   )
