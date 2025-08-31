@@ -1,6 +1,5 @@
 import { GithubIcon, PlayIcon, TwitterIcon } from "lucide-react"
 import Link from "next/link"
-import { JSX, SVGProps } from "react"
 
 export default function Footer() {
   return (
