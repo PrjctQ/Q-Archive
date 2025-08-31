@@ -4,7 +4,7 @@ const Navbar = async () => {
   return (
     <section className="flex mx-auto w-full pt-10">
       {/* text */}
-      <div className="space-y-5">
+      <div className="space-y-5 ">
         <h1 className="font-bold">Q-Archive</h1>
         <h2 className="">An Archive of ProjectQ's Journey.</h2>
         <p>
