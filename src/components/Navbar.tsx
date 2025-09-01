@@ -1,7 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
+import { getUser } from "@/lib/auth.actions";
 import Link from "next/link";
 
 const Navbar = async () => {
+
+  const user = await getUser()
+  if(user){
+    console.log(user)
+  }
+
   return (
     <section className="flex mx-auto w-full pt-10">
       {/* text */}
