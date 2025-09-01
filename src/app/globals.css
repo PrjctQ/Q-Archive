@@ -7,11 +7,15 @@
 .inter {
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
+  display: "swap",
 }
-  .baskervville {
+
+.baskervville {
   font-family: "Baskervville", serif;
   font-optical-sizing: auto;
+  display: "swap",
 }
+
 :root {
   --background: oklch(0.9821 0 0);
   --foreground: oklch(0.2435 0 0);
