@@ -1,9 +1,45 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { GithubIcon, PlayIcon, TwitterIcon } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "./ui/theme-toggle";
-import LoginModal from "./LoginModal"; // import the shadcn login modal
+import LoginModal from "./LoginModal";
+import { getUser, logout } from "@/lib/auth.actions";
+import { toast } from "react-hot-toast";
 
 export default function Footer() {
+  const [user, setUser] = useState<unknown>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch current user on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      const u = await getUser(); // server action/API route
+      setUser(u);
+    };
+    fetchUser();
+  }, []);
+
+  // Logout handler
+  const handleLogout = async () => {
+    setLoading(true);
+    try {
+      const result = await logout(); // client-friendly logout
+      if (result.success) {
+        toast.success("Logged out successfully!");
+        setUser(null);
+      } else {
+        toast.error(result.message || "Logout failed.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Logout failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <footer className="flex shrink-0 items-center w-full mx-auto flex-row justify-between gap-2 py-2 md:py-4 border-t">
       <Link
@@ -16,6 +52,7 @@ export default function Footer() {
       </Link>
 
       <div className="flex items-center justify-end gap-4">
+        {/* Social Links */}
         <Link
           href="#"
           className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 dark:border-stone-700 hover:scale-125 hover:rotate-12 transition-transform p-2"
@@ -46,8 +83,18 @@ export default function Footer() {
 
         <ModeToggle />
 
-        {/* LogsIcon now opens the LoginModal */}
-        <LoginModal />
+        {/* Conditional Login / Logout */}
+        {user ? (
+          <button
+            onClick={handleLogout}
+            className="h-8 w-20 flex items-center justify-center rounded-full border border-gray-200 dark:border-stone-700 hover:bg-red-500 hover:text-white transition-colors"
+            disabled={loading}
+          >
+            {loading ? "Logging out..." : "Logout"}
+          </button>
+        ) : (
+          <LoginModal onLogin={(newUser: unknown) => setUser(newUser)} />
+        )}
       </div>
     </footer>
   );

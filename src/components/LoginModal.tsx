@@ -12,9 +12,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { login } from "@/lib/auth.actions"; // server-friendly login
+import { login } from "@/lib/auth.actions";
 
-export default function LoginModal() {
+interface LoginModalProps {
+  onLogin?: (user: unknown) => void;
+}
+
+export default function LoginModal({ onLogin }: LoginModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,15 +33,17 @@ export default function LoginModal() {
     formData.append("password", password);
 
     try {
-      const result = await login(formData); // server-friendly login
+      const result = await login(formData);
 
       if (result.success) {
         toast.success("Logged in successfully!");
         setEmail("");
         setPassword("");
         setIsOpen(false);
+
+        if (onLogin) onLogin(result.user); // update Footer state
       } else {
-        toast.error(result.message || "Login failed. Check your credentials.");
+        toast.error(result.message || "Login failed.");
       }
     } catch (err) {
       console.error(err);
@@ -49,7 +55,6 @@ export default function LoginModal() {
 
   return (
     <>
-      {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
         className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 dark:border-stone-700 hover:scale-125 hover:rotate-12 transition-transform"
@@ -58,7 +63,6 @@ export default function LoginModal() {
         <LogsIcon className="w-4 h-4" />
       </button>
 
-      {/* Modal */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
