@@ -1,22 +1,11 @@
-"use client"
+// src/components/List.tsx
+import { getArchive } from "@/lib/archive.actions";
 
-import { useEffect, useState } from "react";
+const List = async () => {
+  const { data } = await getArchive();
 
-interface Article {
-  title: string;
-  slug: string;
-  content: string;
-  date: string;
-}
-
-const List = () => {
-   const [articles, setArticles] = useState<Article[]>([]);
-
-  useEffect(() => {
-    fetch("/api/archive")
-      .then((res) => res.json())
-      .then((data) => setArticles(data.data || []));
-  }, []);
+  // Make sure 'articles' is always an array
+  const articles = Array.isArray(data) ? data : data ? [data] : [];
 
   return (
     <div className="font-inter group">
@@ -29,13 +18,8 @@ const List = () => {
             group-hover:opacity-50 hover:!opacity-100
           "
         >
-          {/* Left text */}
           <span className="pr-2">{article.title}</span>
-
-          {/* Flexible line that fills space */}
           <span className="flex-1 border-t border-stone-600 mx-2"></span>
-
-          {/* Date */}
           <span className="text-stone-500">{article.date}</span>
         </div>
       ))}
