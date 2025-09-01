@@ -6,7 +6,7 @@
     - [ ] update article
     - [ ] delete article
     - [x] login for core members
-    - [ ] logout for core members
+    - [x] logout for core members
     - [x] get authenticated user's profile
 - [x] index of logs in home page
 - [ ] create log sheet

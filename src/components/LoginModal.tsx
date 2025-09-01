@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { LogsIcon, X } from "lucide-react";
 import { toast } from "react-hot-toast";
 import {
   Dialog,
@@ -13,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { login } from "@/lib/auth.actions";
+import { LogIn } from "lucide-react";
 
 interface LoginModalProps {
   onLogin?: (user: unknown) => void;
@@ -60,7 +60,7 @@ export default function LoginModal({ onLogin }: LoginModalProps) {
         className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 dark:border-stone-700 hover:scale-125 hover:rotate-12 transition-transform"
       >
         <span className="sr-only">Open Login Modal</span>
-        <LogsIcon className="w-4 h-4" />
+        <LogIn className="w-4 h-4" />
       </button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -90,9 +90,6 @@ export default function LoginModal({ onLogin }: LoginModalProps) {
           </form>
 
           <DialogClose asChild>
-            <button className="absolute top-2 right-2 p-1">
-              <X className="w-4 h-4" />
-            </button>
           </DialogClose>
         </DialogContent>
       </Dialog>

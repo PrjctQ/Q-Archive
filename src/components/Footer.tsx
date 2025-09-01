@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { GithubIcon, PlayIcon, TwitterIcon } from "lucide-react";
+import { GithubIcon, LogOut, PlayIcon, TwitterIcon } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "./ui/theme-toggle";
 import LoginModal from "./LoginModal";
@@ -52,10 +52,11 @@ export default function Footer() {
       </Link>
 
       <div className="flex items-center justify-end gap-4">
+      <ModeToggle />
         {/* Social Links */}
         <Link
           href="#"
-          className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 dark:border-stone-700 hover:scale-125 hover:rotate-12 transition-transform p-2"
+          className="h-8 rounded-full border border-gray-200 dark:border-stone-700 w-8 hover:scale-125 hover:rotate-12 transition-transform p-2"
           prefetch={false}
         >
           <span className="sr-only">Twitter</span>
@@ -65,7 +66,7 @@ export default function Footer() {
         <Link
           target="_blank"
           href="https://github.com/prjctq#"
-          className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 dark:border-stone-700 hover:scale-125 hover:rotate-12 transition-transform p-2"
+          className="h-8 rounded-full border border-gray-200 dark:border-stone-700 w-8 hover:scale-125 hover:rotate-12 transition-transform p-2"
           prefetch={false}
         >
           <span className="sr-only">GitHub</span>
@@ -74,23 +75,22 @@ export default function Footer() {
 
         <Link
           href="#"
-          className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 dark:border-stone-700 hover:scale-125 hover:rotate-12 transition-transform p-2"
+          className="h-8 rounded-full border border-gray-200 dark:border-stone-700 w-8 hover:scale-125 hover:rotate-12 transition-transform p-2"
           prefetch={false}
         >
           <span className="sr-only">YouTube</span>
           <PlayIcon className="w-4 h-4" />
         </Link>
 
-        <ModeToggle />
 
         {/* Conditional Login / Logout */}
         {user ? (
           <button
             onClick={handleLogout}
-            className="h-8 w-20 flex items-center justify-center rounded-full border border-gray-200 dark:border-stone-700 hover:bg-red-500 hover:text-white transition-colors"
+            className="h-8 rounded-full border border-gray-200 dark:border-stone-700 w-8 hover:scale-125 hover:rotate-12 transition-transform p-2"
             disabled={loading}
           >
-            {loading ? "Logging out..." : "Logout"}
+            {loading ? "..." : <LogOut className="w-4 h-4"/>}
           </button>
         ) : (
           <LoginModal onLogin={(newUser: unknown) => setUser(newUser)} />

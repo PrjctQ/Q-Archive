@@ -1,14 +1,23 @@
 "use client"
 
-const articles = [
-  { name: "Understanding Astro.js", date: "11/11/23" },
-  { name: "Deep Dive into Supabase Authentication", date: "01/14/24" },
-  { name: "Minimalist UI Design with Tailwind", date: "05/05/24" },
-  { name: "Building Q-Archive Project", date: "07/21/24" },
-  { name: "Deploying Projects Seamlessly", date: "11/02/25" },
-];
+import { useEffect, useState } from "react";
+
+interface Article {
+  title: string;
+  slug: string;
+  content: string;
+  date: string;
+}
 
 const List = () => {
+   const [articles, setArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    fetch("/api/archive")
+      .then((res) => res.json())
+      .then((data) => setArticles(data.data || []));
+  }, []);
+
   return (
     <div className="font-inter group">
       {articles.map((article, index) => (
@@ -21,7 +30,7 @@ const List = () => {
           "
         >
           {/* Left text */}
-          <span className="pr-2">{article.name}</span>
+          <span className="pr-2">{article.title}</span>
 
           {/* Flexible line that fills space */}
           <span className="flex-1 border-t border-stone-600 mx-2"></span>
