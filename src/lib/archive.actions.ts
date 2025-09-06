@@ -1,47 +1,44 @@
+// src/lib/archive.actions.ts
 import { createClient } from "./supabase/server";
 
 interface ArchiveData {
   title: string;
   slug: string;
   content: string;
-  date: string; // added date
+  date: string;
 }
 
-// Fetch all articles or a single article by slug
-export async function getArchive(slug?: string): Promise<{ data?: ArchiveData[] | ArchiveData; error?: string }> {
+// Fetch all articles
+export async function getArchive(): Promise<{ data?: ArchiveData[]; error?: string }> {
   try {
     const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("articles")
+      .select("title, slug, content, date")
+      .order("date", { ascending: true });
 
-    if (slug) {
-      // Fetch a single article by slug
-      const { data, error } = await supabase
-        .from("articles")
-        .select("title, slug, content, date") // include date
-        .eq("slug", slug)
-        .single();
-
-      if (error) {
-        console.error("Error fetching article:", error);
-        return { error: "Failed to fetch article" };
-      }
-
-      return { data };
-    } else {
-      // Fetch all articles
-      const { data, error } = await supabase
-        .from("articles")
-        .select("title, slug, content, date") // include date
-        .order("date", { ascending: true }); // order by date
-
-      if (error) {
-        console.error("Error fetching articles:", error);
-        return { error: "Failed to fetch articles" };
-      }
-
-      return { data };
-    }
-  } catch (error: unknown) {
-    console.error("Error in getArchive:", error);
+    if (error) return { error: "Failed to fetch articles" };
+    return { data: data as ArchiveData[] };
+  } catch (err) {
+    console.error(err);
     return { error: "Failed to fetch articles" };
+  }
+}
+
+// Fetch single article by slug
+export async function getArticleDetails(slug: string): Promise<{ data?: ArchiveData; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("articles")
+      .select("title, slug, content, date")
+      .eq("slug", slug)
+      .single();
+
+    if (error) return { error: "Failed to fetch article" };
+    return { data: data as ArchiveData };
+  } catch (err) {
+    console.error(err);
+    return { error: "Failed to fetch article" };
   }
 }
