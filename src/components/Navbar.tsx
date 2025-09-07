@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { getUser } from "@/lib/auth.actions";
 import Link from "next/link";
+import { AddArchiveSheet } from "./AddArchiveSheet";
 
 const Navbar = async () => {
 
@@ -35,6 +36,7 @@ const Navbar = async () => {
           </Link>{" "}
           to view the source code.
         </p>
+        {user && <AddArchiveSheet />}
       </div>
     </section>
   );

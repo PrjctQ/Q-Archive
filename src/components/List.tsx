@@ -1,4 +1,4 @@
-// src/components/List.tsx
+// src/components/List.tsx server component
 import { getArchive } from "@/lib/archive.actions";
 
 const List = async () => {
