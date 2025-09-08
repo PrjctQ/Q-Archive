@@ -1,6 +1,5 @@
 // src/lib/archive.client.ts
 import { createClient } from "./supabase/client";
-import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 
 export interface ArchiveData {
   title: string;
@@ -21,13 +20,11 @@ export async function addArchive(article: ArchiveData) {
     return { error: "Failed to add article" };
   }
 }
-
-// Get details of a single archive by slug
 export async function getArchiveDetails(slug: string) {
   try {
     const supabase = createClient();
-    const { data, error } : PostgrestSingleResponse<ArchiveData> = await supabase
-      .from<ArchiveData>("articles")
+    const { data, error } = await supabase
+      .from("articles")
       .select("*")
       .eq("slug", slug)
       .single();
