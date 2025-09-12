@@ -17,15 +17,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addArchive } from "@/lib/archive.client";
 
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 // Lazy load UIW Markdown Editor
-const MdEditor = dynamic(() => import("react-markdown-editor-lite"), { ssr: false });
+const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
+  ssr: false,
+});
 
 export function AddArchiveSheet() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState<Date | undefined>();
 
   // Auto-generate slug
   useEffect(() => {
@@ -42,13 +53,19 @@ export function AddArchiveSheet() {
   const handleSubmit = async () => {
     if (!title || !slug || !content || !date) return;
 
-    const res = await addArchive({ title, slug, content, date });
+    const res = await addArchive({
+      title,
+      slug,
+      content,
+      date: date.toISOString(), // store as ISO string
+    });
+
     if (!res.error) {
       setOpen(false);
       setTitle("");
       setSlug("");
       setContent("");
-      setDate("");
+      setDate(undefined);
     } else {
       alert(res.error);
     }
@@ -59,28 +76,42 @@ export function AddArchiveSheet() {
       <SheetTrigger asChild>
         <Button variant="secondary">Add Archive</Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[600px]">
+      <SheetContent side="right" className="min-w-2xl p-10">
         <SheetHeader>
           <SheetTitle>Add New Archive</SheetTitle>
         </SheetHeader>
-        <div className="space-y-4 mt-4">
-          <div>
+        <div className="space-y-4 m-3">
+          <div className="space-y-2.5">
             <Label>Title</Label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
 
-          <div>
+          <div className="space-y-2.5">
             <Label>Slug (auto)</Label>
             <Input value={slug} readOnly />
           </div>
 
-          <div>
+          <div className="space-y-2.5">
             <Label>Date</Label>
-            <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  data-empty={!date}
+                  className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar mode="single" selected={date} onSelect={setDate} />
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div>
-            <Label>Content</Label>
+            <Label className="space-y-2.5">Content</Label>
             <MdEditor
               style={{ height: "300px" }}
               value={content}
