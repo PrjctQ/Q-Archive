@@ -39,16 +39,19 @@ export function AddArchiveSheet() {
   const [date, setDate] = useState<Date | undefined>();
 
   // Auto-generate slug
-  useEffect(() => {
-    if (title) {
-      const generatedSlug = title
+  function updateTitleAndSlug(value: string) {
+    setTitle(value);
+    let generatedSlug = "";
+
+    if (value) {
+      generatedSlug = value
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9\s-]/g, "")
         .replace(/\s+/g, "-");
-      setSlug(generatedSlug);
-    } else setSlug("");
-  }, [title]);
+    }
+    setSlug(() => generatedSlug);
+  }
 
   const handleSubmit = async () => {
     if (!title || !slug || !content || !date) return;
@@ -83,7 +86,10 @@ export function AddArchiveSheet() {
         <div className="space-y-4 m-3">
           <div className="space-y-2.5">
             <Label>Title</Label>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+            <Input
+              value={title}
+              onChange={(e) => updateTitleAndSlug(e.target.value)}
+            />
           </div>
 
           <div className="space-y-2.5">
