@@ -55,25 +55,33 @@ export function AddArchiveSheet() {
   }
 
   const queryClient = useQueryClient();
+  
 
-  const mutation = useMutation({
-    mutationFn: async () => {
-      await addArchive({
-        title,
-        slug,
-        content,
-        date: date!.toISOString(), // store as ISO string
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["articles"] });
-      setOpen(false);
-      setTitle("");
-      setSlug("");
-      setContent("");
-      setDate(undefined);
-    },
-  });
+const mutation = useMutation({
+  mutationFn: async () => {
+    if (!date) return;
+
+    const localISODate = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000
+    ).toISOString();
+
+    await addArchive({
+      title,
+      slug,
+      content,
+      date: localISODate,
+    });
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["articles"] });
+    setOpen(false);
+    setTitle("");
+    setSlug("");
+    setContent("");
+    setDate(undefined);
+  },
+});
+
 
   async function handleSubmit() {
     if (!title || !slug || !content || !date) return;
