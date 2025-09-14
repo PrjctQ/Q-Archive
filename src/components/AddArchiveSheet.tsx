@@ -3,7 +3,7 @@
 import * as React from "react";
 import dynamic from "next/dynamic";
 import "react-markdown-editor-lite/lib/index.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ReactMarkdown from "react-markdown";
 import {
@@ -25,6 +25,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // Lazy load UIW Markdown Editor
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
@@ -53,26 +54,32 @@ export function AddArchiveSheet() {
     setSlug(() => generatedSlug);
   }
 
-  const handleSubmit = async () => {
-    if (!title || !slug || !content || !date) return;
+  const queryClient = useQueryClient();
 
-    const res = await addArchive({
-      title,
-      slug,
-      content,
-      date: date.toISOString(), // store as ISO string
-    });
-
-    if (!res.error) {
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await addArchive({
+        title,
+        slug,
+        content,
+        date: date!.toISOString(), // store as ISO string
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
       setOpen(false);
       setTitle("");
       setSlug("");
       setContent("");
       setDate(undefined);
-    } else {
-      alert(res.error);
-    }
-  };
+    },
+  });
+
+  async function handleSubmit() {
+    if (!title || !slug || !content || !date) return;
+
+    mutation.mutate();
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
