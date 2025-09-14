@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { useEffect, useState } from "react";
 import remarkGfm from "remark-gfm";
 import { getArchiveDetails } from "@/lib/archive.client";
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -14,26 +14,15 @@ interface Props {
 export default function ArchiveDetails({ params }: Props) {
   const { slug } = React.use(params);
 
-  const [article, setArticle] = useState<{
-    title: string;
-    slug: string;
-    content: string;
-    date: string;
-  } | null>(null);
+  const { data, error, isLoading, isError } = useQuery({
+    queryKey: ["article", slug],
+    queryFn: async () => await getArchiveDetails(slug),
+  });
 
-  const [error, setError] = useState<string | null>(null);
+  if (isError) return <p>Error: {error.message}</p>;
+  if (isLoading) return <p>Loading...</p>;
 
-  useEffect(() => {
-    async function fetchArticle() {
-      const { data, error } = await getArchiveDetails(slug);
-      if (error) setError(error);
-      else setArticle(data || null);
-    }
-    fetchArticle();
-  }, [slug]);
-
-  if (error) return <p>Error: {error}</p>;
-  if (!article) return <p>Loading...</p>;
+  const article = data?.data;
 
   return (
     <div className="mx-auto p-6 font-inter max-w-3xl">

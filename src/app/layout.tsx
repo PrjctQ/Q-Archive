@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
+import Provider from "./provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,10 +30,9 @@ export const metadata: Metadata = {
 
   // Useful extras
   icons: {
-    icon: "/favicon.ico"
+    icon: "/favicon.ico",
   },
 };
-
 
 export default function RootLayout({
   children,
@@ -44,19 +44,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} inter antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="w-3/4 lg:w-2/5 flex flex-col justify-between min-h-screen mx-auto">
-            <main>
-              <Toaster/>
-              {children}</main>
-            <Footer />
-          </div>
-        </ThemeProvider>
+        <Provider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="w-3/4 lg:w-2/5 flex flex-col justify-between min-h-screen mx-auto">
+              <main>
+                <Toaster />
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </ThemeProvider>
+        </Provider>
       </body>
     </html>
   );
