@@ -94,7 +94,7 @@ const mutation = useMutation({
       <SheetTrigger asChild>
         <Button variant="secondary">Add Archive</Button>
       </SheetTrigger>
-      <SheetContent side="right" className="min-w-2xl p-10">
+      <SheetContent side="right" className="md:min-w-2xl p-10">
         <SheetHeader>
           <SheetTitle>Add New Archive</SheetTitle>
         </SheetHeader>
@@ -119,7 +119,7 @@ const mutation = useMutation({
                 <Button
                   variant="outline"
                   data-empty={!date}
-                  className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+                  className="data-[empty=true]:text-muted-foreground w-54 md:w-[280px] justify-start text-left font-normal"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date ? format(date, "PPP") : <span>Pick a date</span>}
