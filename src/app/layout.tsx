@@ -18,7 +18,21 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Q-Archive",
   description: "An Archive of ProjectQ's Journey.",
+
+  // For SEO
+  keywords: ["ProjectQ", "Archive", "Journey", "Notes", "Knowledge Base"],
+
+  authors: [{ name: "ProjectQ Team", url: "https://q-archive.vercel.app" }],
+
+  creator: "ProjectQ",
+  publisher: "ProjectQ",
+
+  // Useful extras
+  icons: {
+    icon: "/favicon.ico"
+  },
 };
+
 
 export default function RootLayout({
   children,
