@@ -1,10 +1,19 @@
+"use client";
+
 // src/components/List.tsx
 import Link from "next/link";
-import { getArchive } from "@/lib/archive.actions";
+import { getArchive } from "@/lib/archive.client";
+import { useQuery } from "@tanstack/react-query";
 
-const List = async () => {
-  const { data } = await getArchive();
+const List = () => {
+  const { data: articlesData, isLoading } = useQuery({
+    queryKey: ["articles"],
+    queryFn: async () => await getArchive(),
+  });
 
+  if (isLoading) return <p>Loading...</p>;
+
+  const data = articlesData?.data;
   // Make sure 'articles' is always an array
   const articles = Array.isArray(data) ? data : data ? [data] : [];
 

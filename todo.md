@@ -1,16 +1,18 @@
 - [x] fix Inter font issue in deployment
 - [x] connect Supabase
-- [ ] create endpoints for 
-    - [x] get articles
-    - [ ] get single articles
-    - [ ] add article
-    - [ ] update article
-    - [ ] delete article
-    - [x] login for core members
-    - [x] logout for core members
-    - [x] get authenticated user's profile
+- [ ] create endpoints for
+  - [x] get articles
+  - [ ] get single articles
+  - [ ] add article
+  - [ ] update article
+  - [ ] delete article
+  - [x] login for core members
+  - [x] logout for core members
+  - [x] get authenticated user's profile
 - [x] index of logs in home page
 - [ ] create single article page
 - [ ] create log sheet
 - [ ] update log sheet
 - [ ] delete log functionality
+- [ ] create caching functionality
+- [ ] add meta tags to pages

@@ -5,8 +5,8 @@ export default function Home() {
   return (
     <>
       <main className="space-y-16">
-        <Navbar/>
-        <List/>
+        <Navbar />
+        <List />
       </main>
     </>
   );
