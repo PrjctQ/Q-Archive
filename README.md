@@ -6,16 +6,15 @@
 
 ```
 git clone https://github.com/PrjctQ/Q-Archive.git
-cd Q-Archive
+cd Q-Archive && pnpm i
 ```
 
-#### 2. Set up envrionment variables from `.env.example`
-
+#### 2. copy `.env.example` and replace with your environment variable values
 ```
 cp .env.example .env.local
 ```
 
-3. Sync supabase database
+#### 3. Sync supabase database
 
 - Login to supabase
 
@@ -35,7 +34,7 @@ pnpm supabase link --project-ref <project_id>
 pnpm supabase db push
 ```
 
-#### 3. Start development server
+#### 4. Start development server
 
 ```
 pnpm dev
