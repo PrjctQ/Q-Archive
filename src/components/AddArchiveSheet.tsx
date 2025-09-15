@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addArchive } from "@/lib/archive.client";
+import type { User } from "@supabase/supabase-js"
 
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -32,7 +33,12 @@ const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
 });
 
-export function AddArchiveSheet() {
+// TODO: Current component accepts user as prop.
+// Utilizing global context would be a much better approach
+
+// NOTE: Using `getUser` requires unnecessary API calls
+
+export function AddArchiveSheet({ user }: Props) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -55,32 +61,32 @@ export function AddArchiveSheet() {
   }
 
   const queryClient = useQueryClient();
-  
 
-const mutation = useMutation({
-  mutationFn: async () => {
-    if (!date) return;
 
-    const localISODate = new Date(
-      date.getTime() - date.getTimezoneOffset() * 60000
-    ).toISOString();
+  const mutation = useMutation({
+    mutationFn: async () => {
+      if (!date) return;
 
-    await addArchive({
-      title,
-      slug,
-      content,
-      date: localISODate,
-    });
-  },
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["articles"] });
-    setOpen(false);
-    setTitle("");
-    setSlug("");
-    setContent("");
-    setDate(undefined);
-  },
-});
+      const localISODate = new Date(
+        date.getTime() - date.getTimezoneOffset() * 60000
+      ).toISOString();
+
+      await addArchive({
+        title,
+        slug,
+        content,
+        date: localISODate,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
+      setOpen(false);
+      setTitle("");
+      setSlug("");
+      setContent("");
+      setDate(undefined);
+    },
+  });
 
 
   async function handleSubmit() {
@@ -112,26 +118,36 @@ const mutation = useMutation({
             <Input value={slug} readOnly />
           </div>
 
-          <div className="space-y-2.5">
-            <Label>Date</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  data-empty={!date}
-                  className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={date} onSelect={setDate} />
-              </PopoverContent>
-            </Popover>
+          <div className="flex items-center gap-4">
+            {/* Date picker */}
+            <div className="space-y-2.5">
+              <Label>Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    data-empty={!date}
+                    className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar mode="single" selected={date} onSelect={setDate} />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* Author Info */}
+            <div className="space-y-2.5 w-full">
+              <Label>Author</Label>
+              <Input value={user.email} readOnly />
+            </div>
+
           </div>
 
-          <div>
+          <div className="space-y-2.5">
             <Label className="space-y-2.5">Content</Label>
             <MdEditor
               style={{ height: "300px" }}
@@ -148,4 +164,8 @@ const mutation = useMutation({
       </SheetContent>
     </Sheet>
   );
+}
+
+interface Props {
+  user: User
 }

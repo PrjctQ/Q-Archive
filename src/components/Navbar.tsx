@@ -6,9 +6,6 @@ import { AddArchiveSheet } from "./AddArchiveSheet";
 const Navbar = async () => {
 
   const user = await getUser()
-  if(user){
-    console.log(user)
-  }
 
   return (
     <section className="flex mx-auto w-full pt-10">
@@ -36,7 +33,7 @@ const Navbar = async () => {
           </Link>{" "}
           to view the source code.
         </p>
-        {user && <AddArchiveSheet />}
+        {user && <AddArchiveSheet user={user} />}
       </div>
     </section>
   );
