@@ -2,22 +2,21 @@
 
 // src/components/List.tsx
 import Link from "next/link";
-import { getArchive } from "@/lib/archive.client";
-import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "./Spinner";
+import { useArticleList } from "@/hooks/useArticle";
 
 const List = () => {
-  const { data: articlesData, isLoading } = useQuery({
-    queryKey: ["articles"],
-    queryFn: async () => await getArchive(),
-  });
+  const { isLoading, data } = useArticleList();
 
-  if (isLoading) return <div className="flex items-center justify-center w-full"><Spinner/></div>;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center w-full">
+        <Spinner />
+      </div>
+    );
 
-  const data = articlesData?.data;
   // Make sure 'articles' is always an array
   const articles = Array.isArray(data) ? data : data ? [data] : [];
-
   return (
     <div className="font-inter group">
       {articles.map((article, index) => (
