@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import { getArchiveDetails } from "@/lib/archive.client";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "@/components/Spinner";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -20,7 +21,7 @@ export default function ArchiveDetails({ params }: Props) {
   });
 
   if (isError) return <p>Error: {error.message}</p>;
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <div className="flex items-center justify-center h-96 w-full"><Spinner/></div>;
 
   const article = data?.data;
 
