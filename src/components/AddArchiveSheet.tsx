@@ -27,23 +27,20 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useGetUser } from "@/services/auth.service";
 
 // Lazy load UIW Markdown Editor
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
 });
 
-// TODO: Current component accepts user as prop.
-// Utilizing global context would be a much better approach
-
-// NOTE: Using `getUser` requires unnecessary API calls
-
-export function AddArchiveSheet({ user }: Props) {
+export function AddArchiveSheet() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState<Date | undefined>();
+  const { user } = useGetUser()
 
   // Auto-generate slug
   function updateTitleAndSlug(value: string) {
@@ -142,7 +139,7 @@ export function AddArchiveSheet({ user }: Props) {
             {/* Author Info */}
             <div className="space-y-2.5 w-full">
               <Label>Author</Label>
-              <Input value={user.email} readOnly />
+              <Input value={user?.email} readOnly />
             </div>
 
           </div>
@@ -164,8 +161,4 @@ export function AddArchiveSheet({ user }: Props) {
       </SheetContent>
     </Sheet>
   );
-}
-
-interface Props {
-  user: User
 }

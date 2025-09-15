@@ -5,6 +5,7 @@ import { AddArchiveSheet } from "./AddArchiveSheet";
 
 const Navbar = async () => {
 
+  // TODO: Use a global context to retrieve user
   const user = await getUser()
 
   return (
@@ -16,7 +17,7 @@ const Navbar = async () => {
         <p>
           Q-Archive is a minimal, distraction-free space built to preserve and
           document the evolution of ProjectQ. <span className="font-serif italic">Every entry is designed to place
-          the writing itself at the forefront.</span>
+            the writing itself at the forefront.</span>
         </p>
         <p>
           The archive emphasizes clarity and simplicity, making it easy to read,
@@ -33,7 +34,7 @@ const Navbar = async () => {
           </Link>{" "}
           to view the source code.
         </p>
-        {user && <AddArchiveSheet user={user} />}
+        {user && <AddArchiveSheet />}
       </div>
     </section>
   );
