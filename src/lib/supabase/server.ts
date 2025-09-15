@@ -1,6 +1,7 @@
 import { config } from '@/config/env'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { SupabaseClient as Client } from '@supabase/supabase-js'
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -28,3 +29,29 @@ export async function createClient() {
     }
   )
 }
+
+// INFO:
+// Singleton pattern to initalize supabase client
+// This reduces redundant API calls to supabase and
+// doesn't resues the same client rather than creating a new one
+export class SupabaseClient {
+  private static client: Client | null;
+
+  public static async getClient() {
+    if (!this.client) {
+      this.client = await createClient();
+    }
+
+    return this.client
+  }
+}
+
+// export async function supabaseClient(): Promise<SupabaseClient> {
+//   let client: SupabaseClient | null = null
+//
+//   if (!client) {
+//     client = await supabaseClient()
+//   }
+//
+//   return client;
+// }
