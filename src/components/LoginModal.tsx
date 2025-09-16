@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { login } from "@/lib/auth.actions";
 import { LogIn } from "lucide-react";
+import { Spinner } from "./Spinner";
 
 interface LoginModalProps {
   onLogin?: (user: unknown) => void;
@@ -85,7 +86,7 @@ export default function LoginModal({ onLogin }: LoginModalProps) {
               required
             />
             <Button type="submit" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? <Spinner/> : "Login"}
             </Button>
           </form>
 
