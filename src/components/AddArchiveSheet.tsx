@@ -1,9 +1,7 @@
 "use client";
 
-import * as React from "react";
 import dynamic from "next/dynamic";
 import "react-markdown-editor-lite/lib/index.css";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ReactMarkdown from "react-markdown";
 import {
@@ -15,7 +13,6 @@ import {
 } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addArchive } from "@/lib/archive.client";
 import type { User } from "@supabase/supabase-js"
 
 import { format } from "date-fns";
@@ -26,7 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCreateArticle } from "@/hooks/useCreateArticle";
 
 // Lazy load UIW Markdown Editor
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
@@ -39,15 +36,11 @@ const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
 // NOTE: Using `getUser` requires unnecessary API calls
 
 export function AddArchiveSheet({ user }: Props) {
-  const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-  const [content, setContent] = useState("");
-  const [date, setDate] = useState<Date | undefined>();
+  const { state, dispatch, mutation } = useCreateArticle();
 
   // Auto-generate slug
   function updateTitleAndSlug(value: string) {
-    setTitle(value);
+    dispatch({ type: "TITLE_UPDATE", payload: value });
     let generatedSlug = "";
 
     if (value) {
@@ -57,46 +50,23 @@ export function AddArchiveSheet({ user }: Props) {
         .replace(/[^a-z0-9\s-]/g, "")
         .replace(/\s+/g, "-");
     }
-    setSlug(() => generatedSlug);
+
+    dispatch({ type: "SLUG_UPDATE", payload: generatedSlug });
   }
-
-  const queryClient = useQueryClient();
-
-
-  const mutation = useMutation({
-    mutationFn: async () => {
-      if (!date) return;
-
-      const localISODate = new Date(
-        date.getTime() - date.getTimezoneOffset() * 60000
-      ).toISOString();
-
-      await addArchive({
-        title,
-        slug,
-        content,
-        date: localISODate,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["articles"] });
-      setOpen(false);
-      setTitle("");
-      setSlug("");
-      setContent("");
-      setDate(undefined);
-    },
-  });
-
-
   async function handleSubmit() {
+    const { title, slug, content, date } = state;
     if (!title || !slug || !content || !date) return;
 
     mutation.mutate();
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet
+      open={state.isOpen}
+      onOpenChange={(open) =>
+        dispatch({ type: "TOGGLE_DRAWER", payload: open })
+      }
+    >
       <SheetTrigger asChild>
         <Button variant="secondary">Add Archive</Button>
       </SheetTrigger>
@@ -108,50 +78,63 @@ export function AddArchiveSheet({ user }: Props) {
           <div className="space-y-2.5">
             <Label>Title</Label>
             <Input
-              value={title}
+              value={state.title}
               onChange={(e) => updateTitleAndSlug(e.target.value)}
             />
           </div>
 
           <div className="space-y-2.5">
             <Label>Slug (auto)</Label>
-            <Input value={slug} readOnly />
+            <Input value={state.slug} readOnly />
           </div>
 
           <div className="flex items-center gap-4">
             {/* Date picker */}
-          <div className="space-y-2.5">
-            <Label>Date</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  data-empty={!date}
-                  className="data-[empty=true]:text-muted-foreground w-54 md:w-[280px] justify-start text-left font-normal"
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={date} onSelect={setDate} />
-              </PopoverContent>
-            </Popover>
-          </div>
+            <div className="space-y-2.5">
+              <Label>Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    data-empty={!state.date}
+                    className="data-[empty=true]:text-muted-foreground w-54 md:w-[280px] justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {state.date ? (
+                      format(state.date, "PPP")
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={state.date}
+                    onSelect={(selectedDate) =>
+                      dispatch({ type: "DATE_UPDATE", payload: selectedDate })
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
 
             {/* Author Info */}
             <div className="space-y-2.5 w-full">
               <Label>Author</Label>
               <Input value={user.email} readOnly />
             </div>
+          </div>
 
           <div className="space-y-2.5">
             <Label className="space-y-2.5">Content</Label>
             <MdEditor
               style={{ height: "300px" }}
-              value={content}
+              value={state.content}
               renderHTML={(text) => <ReactMarkdown>{text}</ReactMarkdown>}
-              onChange={({ text }) => setContent(text)}
+              onChange={({ text }) =>
+                dispatch({ type: "CONTENT_UPDATE", payload: text })
+              }
             />
           </div>
 
