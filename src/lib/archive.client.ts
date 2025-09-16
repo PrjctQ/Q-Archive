@@ -1,5 +1,5 @@
 // src/lib/archive.client.ts
-import { createClient } from "./supabase/client";
+import { supabaseClient as supabase } from "./supabase/client";
 
 export interface ArchiveData {
   title: string;
@@ -11,7 +11,6 @@ export interface ArchiveData {
 // Add a new archive
 export async function addArchive(article: ArchiveData) {
   try {
-    const supabase = createClient();
     const { error } = await supabase.from("articles").insert([article]);
     if (error) return { error: error.message };
     return { success: true };
@@ -22,7 +21,6 @@ export async function addArchive(article: ArchiveData) {
 }
 export async function getArchiveDetails(slug: string) {
   try {
-    const supabase = createClient();
     const { data, error } = await supabase
       .from("articles")
       .select("*")
@@ -42,8 +40,6 @@ export async function getArchive(
   slug?: string
 ): Promise<{ data?: ArchiveData[] | ArchiveData; error?: string }> {
   try {
-    const supabase = await createClient();
-
     if (slug) {
       // Fetch a single article by slug
       const { data, error } = await supabase

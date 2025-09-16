@@ -5,10 +5,8 @@ import { AddArchiveSheet } from "./AddArchiveSheet";
 
 const Navbar = async () => {
 
+  // TODO: Use a global context to retrieve user
   const user = await getUser()
-  if(user){
-    console.log(user)
-  }
 
   return (
     <section className="flex mx-auto w-full pt-10">
@@ -19,7 +17,7 @@ const Navbar = async () => {
         <p>
           Q-Archive is a minimal, distraction-free space built to preserve and
           document the evolution of ProjectQ. <span className="font-serif italic">Every entry is designed to place
-          the writing itself at the forefront.</span>
+            the writing itself at the forefront.</span>
         </p>
         <p>
           The archive emphasizes clarity and simplicity, making it easy to read,

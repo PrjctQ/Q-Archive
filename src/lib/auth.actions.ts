@@ -1,12 +1,14 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { SupabaseClient } from '@/lib/supabase/server'
+import { User } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 // log in
+
 export async function login(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await SupabaseClient.getClient()
 
   const data = {
     email: formData.get('email') as string,
@@ -27,7 +29,7 @@ export async function login(formData: FormData) {
 
 // sign in
 export async function signup(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await SupabaseClient.getClient()
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -47,7 +49,7 @@ export async function signup(formData: FormData) {
 }
 
 export async function logout() {
-  const supabase = await createClient();
+  const supabase = await SupabaseClient.getClient()
   const { error } = await supabase.auth.signOut();
 
   // revalidate cache
@@ -59,9 +61,10 @@ export async function logout() {
 }
 
 // user profile
-export async function getUser() {
+export async function getUser(): Promise<User | null> {
+  const supabase = await SupabaseClient.getClient()
+
   try {
-    const supabase = await createClient()
     const {
       data: { user },
       error,
