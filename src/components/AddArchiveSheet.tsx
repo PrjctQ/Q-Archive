@@ -1,9 +1,7 @@
 "use client";
 
-import { useReducer } from "react";
 import dynamic from "next/dynamic";
 import "react-markdown-editor-lite/lib/index.css";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ReactMarkdown from "react-markdown";
 import {
@@ -15,7 +13,6 @@ import {
 } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addArchive } from "@/lib/archive.client";
 
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -25,67 +22,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCreateArticle } from "@/hooks/useCreateArticle";
 
 // Lazy load UIW Markdown Editor
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
 });
 
-interface InitState {
-  title: string;
-  slug: string;
-  content: string;
-  date: Date | undefined;
-}
-
-const initState: InitState = {
-  title: "",
-  slug: "",
-  content: "",
-  date: undefined,
-};
-
-type Action =
-  | { type: "TITLE_UPDATE"; payload: string }
-  | { type: "SLUG_UPDATE"; payload: string }
-  | { type: "CONTENT_UPDATE"; payload: string }
-  | { type: "DATE_UPDATE"; payload: Date | undefined }
-  | { type: "RESET" };
-
-function reducer(state: InitState, action: Action) {
-  switch (action.type) {
-    case "TITLE_UPDATE":
-      return {
-        ...state,
-        title: action.payload,
-      };
-    case "SLUG_UPDATE":
-      return {
-        ...state,
-        slug: action.payload,
-      };
-    case "CONTENT_UPDATE":
-      return {
-        ...state,
-        content: action.payload,
-      };
-    case "DATE_UPDATE":
-      return {
-        ...state,
-        date: action.payload as Date | undefined,
-      };
-    case "RESET":
-      return initState;
-    default:
-      return state;
-  }
-}
-
 export function AddArchiveSheet() {
-  const [open, setOpen] = useState(false);
-
-  const [state, dispatch] = useReducer(reducer, initState);
+  const { state, dispatch, mutation } = useCreateArticle();
 
   // Auto-generate slug
   function updateTitleAndSlug(value: string) {
@@ -102,32 +47,6 @@ export function AddArchiveSheet() {
 
     dispatch({ type: "SLUG_UPDATE", payload: generatedSlug });
   }
-
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: async () => {
-      const { title, slug, content, date } = state;
-      if (!date) return;
-
-      const localISODate = new Date(
-        date.getTime() - date.getTimezoneOffset() * 60000
-      ).toISOString();
-
-      await addArchive({
-        title,
-        slug,
-        content,
-        date: localISODate,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["articles"] });
-      dispatch({ type: "RESET" });
-      setOpen(false);
-    },
-  });
-
   async function handleSubmit() {
     const { title, slug, content, date } = state;
     if (!title || !slug || !content || !date) return;
@@ -136,7 +55,12 @@ export function AddArchiveSheet() {
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet
+      open={state.isOpen}
+      onOpenChange={(open) =>
+        dispatch({ type: "TOGGLE_DRAWER", payload: open })
+      }
+    >
       <SheetTrigger asChild>
         <Button variant="secondary">Add Archive</Button>
       </SheetTrigger>
