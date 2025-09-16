@@ -23,7 +23,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useCreateArticle } from "@/hooks/useCreateArticle";
-import { useGetUser } from "@/services/auth.service";
+import { useGetUser } from "@/hooks/auth/useGetUser";
 
 // Lazy load UIW Markdown Editor
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
