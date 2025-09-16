@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { getArchive } from "@/lib/archive.client";
 import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "./Spinner";
 
 const List = () => {
   const { data: articlesData, isLoading } = useQuery({
@@ -11,7 +12,7 @@ const List = () => {
     queryFn: async () => await getArchive(),
   });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <div className="flex items-center justify-center w-full"><Spinner/></div>;
 
   const data = articlesData?.data;
   // Make sure 'articles' is always an array

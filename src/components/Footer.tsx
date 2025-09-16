@@ -7,6 +7,7 @@ import { ModeToggle } from "./ui/theme-toggle";
 import LoginModal from "./LoginModal";
 import { getUser, logout } from "@/lib/auth.actions";
 import { toast } from "react-hot-toast";
+import { Spinner } from "./Spinner";
 
 export default function Footer() {
   const [user, setUser] = useState<unknown>(null);
@@ -90,7 +91,7 @@ export default function Footer() {
             className="h-8 rounded-full border border-gray-200 dark:border-stone-700 w-8 hover:scale-125 hover:rotate-12 transition-transform p-2"
             disabled={loading}
           >
-            {loading ? "..." : <LogOut className="w-4 h-4"/>}
+            {loading ? <Spinner/> : <LogOut className="w-4 h-4"/>}
           </button>
         ) : (
           <LoginModal onLogin={(newUser: unknown) => setUser(newUser)} />

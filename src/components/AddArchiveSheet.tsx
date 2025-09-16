@@ -100,7 +100,7 @@ export function AddArchiveSheet({ user }: Props) {
       <SheetTrigger asChild>
         <Button variant="secondary">Add Archive</Button>
       </SheetTrigger>
-      <SheetContent side="right" className="min-w-2xl p-10">
+      <SheetContent side="right" className="md:min-w-2xl p-10">
         <SheetHeader>
           <SheetTitle>Add New Archive</SheetTitle>
         </SheetHeader>
@@ -120,32 +120,30 @@ export function AddArchiveSheet({ user }: Props) {
 
           <div className="flex items-center gap-4">
             {/* Date picker */}
-            <div className="space-y-2.5">
-              <Label>Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    data-empty={!date}
-                    className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar mode="single" selected={date} onSelect={setDate} />
-                </PopoverContent>
-              </Popover>
-            </div>
+          <div className="space-y-2.5">
+            <Label>Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  data-empty={!date}
+                  className="data-[empty=true]:text-muted-foreground w-54 md:w-[280px] justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar mode="single" selected={date} onSelect={setDate} />
+              </PopoverContent>
+            </Popover>
+          </div>
 
             {/* Author Info */}
             <div className="space-y-2.5 w-full">
               <Label>Author</Label>
               <Input value={user.email} readOnly />
             </div>
-
-          </div>
 
           <div className="space-y-2.5">
             <Label className="space-y-2.5">Content</Label>
